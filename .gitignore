@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.venv/
+venv/
+env/
+ENV/
+
+# Django/runtime secrets
+.env
+.env.*
+!.env.example
+db.sqlite3
+db.sqlite3-*
+*.log
+local_settings.py
+staticfiles/
+media/
+
+# Tests and tooling
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.cache/
+
+# IDE/OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Deployment/local certificates
+*.pem
+*.key
+*.crt
