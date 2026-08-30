@@ -78,6 +78,7 @@ class Shift(models.Model):
     notes = models.TextField(blank=True)
     color = models.CharField(max_length=7, default='#2563EB')
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shifts')
+    template = models.ForeignKey('ShiftTemplate', null=True, blank=True, on_delete=models.SET_NULL, related_name='scheduled_shifts')
     @property
     def ends_next_day(self): return self.end_time <= self.start_time
     @property
@@ -88,6 +89,17 @@ class Shift(models.Model):
     @property
     def time_range(self): return f'{self.start_time.strftime("%H:%M")} – {self.end_time.strftime("%H:%M")}'
     class Meta: ordering = ['date','start_time']
+
+class ShiftTemplate(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shift_templates')
+    name = models.CharField(max_length=120)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    location = models.CharField(max_length=160, blank=True)
+    notes = models.TextField(blank=True)
+    color = models.CharField(max_length=7, default='#2563EB')
+    class Meta: ordering = ['name']
+    def __str__(self): return self.name
 
 class Notification(models.Model):
     TYPE_CHOICES = [('SHIFT_REMINDER','Shift reminder'),('TASK_REMINDER','Task reminder'),('DEADLINE_WARNING','Deadline warning'),('DEADLINE_OVERDUE','Deadline overdue'),('MILESTONE_WARNING','Milestone warning'),('MILESTONE_OVERDUE','Milestone overdue'),('PROJECT_UPDATE','Project update'),('TASK_ASSIGNED','Task assigned'),('SYSTEM','System')]
@@ -105,3 +117,19 @@ class ReminderPreference(models.Model):
     deadline_enabled = models.BooleanField(default=True)
     task_enabled = models.BooleanField(default=True)
     timezone = models.CharField(max_length=64, default='UTC')
+
+class Note(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes')
+    title = models.CharField(max_length=200)
+    body = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    class Meta:
+        ordering = ['-updated_at']
+        indexes = [models.Index(fields=['owner', '-updated_at'])]
+    def __str__(self): return self.title
+    @property
+    def excerpt(self):
+        words = self.body.split()
+        text = ' '.join(words[:30])
+        return text + ('…' if len(words) > 30 else '')

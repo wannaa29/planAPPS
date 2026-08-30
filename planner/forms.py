@@ -1,6 +1,6 @@
 from django import forms
 from django.utils import timezone
-from .models import Task, Project, Milestone, Shift
+from .models import Task, Project, Milestone, Shift, ShiftTemplate, Note
 
 class StyledModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -46,12 +46,40 @@ class MilestoneForm(StyledModelForm):
         return value
 
 class ShiftForm(StyledModelForm):
+    template = forms.ModelChoiceField(queryset=ShiftTemplate.objects.none(), required=False, empty_label='Choose a saved schedule…')
     class Meta:
         model = Shift; fields = ['name','date','start_time','end_time','location','notes','color']
         widgets = {'date': forms.DateInput(attrs={'type':'date'}), 'start_time': forms.TimeInput(attrs={'type':'time'}), 'end_time': forms.TimeInput(attrs={'type':'time'}), 'color': forms.TextInput(attrs={'type':'color','class':'color-input'})}
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user is not None: self.fields['template'].queryset = ShiftTemplate.objects.filter(owner=user)
     def clean(self):
         data = super().clean(); today, now = timezone.localdate(), timezone.localtime().time()
         shift_date, start = data.get('date'), data.get('start_time')
         if shift_date and shift_date < today: self.add_error('date', 'Shift date cannot be in the past.')
         if shift_date == today and start and start <= now: self.add_error('start_time', 'Start time must be later than the current time.')
         return data
+
+class ShiftTemplateForm(StyledModelForm):
+    class Meta:
+        model = ShiftTemplate
+        fields = ['name', 'start_time', 'end_time', 'location', 'notes', 'color']
+        widgets = {'start_time': forms.TimeInput(attrs={'type':'time'}), 'end_time': forms.TimeInput(attrs={'type':'time'}), 'color': forms.TextInput(attrs={'type':'color','class':'color-input'})}
+
+class ScheduleForm(forms.Form):
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'input'}))
+    template = forms.ModelChoiceField(queryset=ShiftTemplate.objects.none(), widget=forms.Select(attrs={'class': 'input'}), empty_label='Choose a schedule template…')
+    def __init__(self, *args, user=None, initial=None, **kwargs):
+        super().__init__(*args, initial=initial, **kwargs)
+        self.fields['date'].widget.attrs['min'] = timezone.localdate().isoformat()
+        if user is not None: self.fields['template'].queryset = ShiftTemplate.objects.filter(owner=user)
+    def clean_date(self):
+        value = self.cleaned_data['date']
+        if value < timezone.localdate(): raise forms.ValidationError('Schedule date cannot be in the past.')
+        return value
+
+class NoteForm(StyledModelForm):
+    class Meta:
+        model = Note
+        fields = ['title', 'body']
+        widgets = {'body': forms.Textarea(attrs={'rows': 8, 'placeholder': 'Write your thoughts…'})}

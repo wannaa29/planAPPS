@@ -7,7 +7,7 @@ DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
 def _csv_env(name, default):
     return [value.strip() for value in os.environ.get(name, default).split(',') if value.strip()]
 
-ALLOWED_HOSTS = _csv_env('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,wanand.my.id,www.wanand.my.id')
+ALLOWED_HOSTS = _csv_env('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver,wanand.my.id,www.wanand.my.id')
 CSRF_TRUSTED_ORIGINS = _csv_env('DJANGO_CSRF_TRUSTED_ORIGINS', 'http://localhost:8000,http://127.0.0.1:8000,http://wanand.my.id,https://wanand.my.id')
 
 INSTALLED_APPS = [
@@ -55,10 +55,20 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+DEFAULT_STORAGE = {
+    'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    'OPTIONS': {'location': MEDIA_ROOT, 'base_url': MEDIA_URL},
+}
 if DEBUG:
-    STORAGES = {'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'}}
+    STORAGES = {
+        'default': DEFAULT_STORAGE,
+        'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
+    }
 else:
-    STORAGES = {'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'}}
+    STORAGES = {
+        'default': DEFAULT_STORAGE,
+        'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
+    }
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'

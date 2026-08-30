@@ -2,7 +2,7 @@ from datetime import date, time, timedelta
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.utils import timezone
-from .models import Project, ProjectMembership, Shift, Task, Milestone
+from .models import Project, ProjectMembership, Shift, ShiftTemplate, Task, Milestone, Note
 from .forms import ProjectForm, MilestoneForm, ShiftForm
 
 class PlannerTests(TestCase):
@@ -47,3 +47,26 @@ class PlannerTests(TestCase):
         self.assertFalse(ProjectForm({'name':'Past','start_date':yesterday,'end_date':yesterday,'status':'ACTIVE','color':'#4f46e5'}).is_valid())
         self.assertFalse(MilestoneForm({'project':'','name':'Past','due_date':yesterday,'status':'UPCOMING'}).is_valid())
         self.assertFalse(ShiftForm({'name':'Past','date':yesterday,'start_time':'09:00','end_time':'17:00'}).is_valid())
+
+    def test_widget_snapshot_requires_login(self):
+        self.assertEqual(self.client.get('/widget/').status_code, 302)
+        self.client.login(username='planner', password='test-pass')
+        self.assertEqual(self.client.get('/widget/').status_code, 200)
+
+    def test_notes_crud(self):
+        self.client.login(username='planner', password='test-pass')
+        response = self.client.post('/notes/new/', {'title': 'Idea', 'body': 'Draft launch notes'})
+        self.assertEqual(response.status_code, 302)
+        note = Note.objects.get(owner=self.user, title='Idea')
+        self.assertEqual(self.client.get('/notes/').status_code, 200)
+        self.assertEqual(self.client.get(f'/notes/{note.pk}/edit/').status_code, 200)
+        self.assertEqual(self.client.post(f'/notes/{note.pk}/delete/').status_code, 302)
+
+    def test_shift_template_can_create_shift(self):
+        self.client.login(username='planner', password='test-pass')
+        response = self.client.post('/shift-templates/new/', {'name':'Morning', 'start_time':'08:00', 'end_time':'16:00', 'location':'HQ', 'notes':'', 'color':'#2563eb'})
+        self.assertEqual(response.status_code, 302)
+        template = ShiftTemplate.objects.get(owner=self.user, name='Morning')
+        response = self.client.post('/schedule/new/', {'template':template.pk, 'date':(timezone.localdate()+timedelta(days=2)).isoformat()})
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Shift.objects.filter(owner=self.user, name='Morning').exists())

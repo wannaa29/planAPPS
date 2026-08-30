@@ -4,6 +4,13 @@
   "description": "Plan your work, shifts, projects, and deadlines in one place.",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "scope": "/",
+  "shortcuts": [
+    {"name": "Today widget", "short_name": "Today", "url": "/widget/", "description": "See today's shift and tasks"},
+    {"name": "Tasks", "short_name": "Tasks", "url": "/tasks/", "description": "Open your task list"},
+    {"name": "Calendar", "short_name": "Calendar", "url": "/calendar/", "description": "Open your calendar"}
+  ],
   "background_color": "#f7f8fc",
   "theme_color": "#4f46e5",
   "icons": [

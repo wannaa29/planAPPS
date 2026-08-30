@@ -25,3 +25,10 @@ For public deployment on `wanand.my.id`, see [DEPLOYMENT.md](DEPLOYMENT.md). Cop
 - Full CRUD actions with confirmation screens and permission checks
 - PWA manifest, service worker, responsive navigation drawer, install prompt, and mobile-friendly animations
 - Date/time validation prevents new or edited work from being scheduled in the past
+- Compact `/widget/` snapshot and PWA shortcuts for Today, Tasks, and Calendar. Native OS widgets are not available to standard PWAs, but this page can be pinned as a home-screen shortcut.
+- Saved shift templates are available at `/shift-templates/` and appear in the New shift form.
+- Schedule Flow now creates calendar entries only by selecting a saved template; the legacy `/shifts/` route redirects to Calendar.
+- Notes app with title and text body displayed as a responsive card grid.
+- Offline page plus local task/note queue that syncs to `/sync/offline/` when the browser comes back online.
+- Persistent dark mode toggle stored in the browser.
+- Root dashboard acts as an app launcher for the separate Notes and Schedule Flow experiences.
