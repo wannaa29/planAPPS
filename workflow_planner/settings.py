@@ -7,8 +7,13 @@ DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
 def _csv_env(name, default):
     return [value.strip() for value in os.environ.get(name, default).split(',') if value.strip()]
 
-ALLOWED_HOSTS = _csv_env('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver,wanand.my.id,www.wanand.my.id')
-CSRF_TRUSTED_ORIGINS = _csv_env('DJANGO_CSRF_TRUSTED_ORIGINS', 'http://localhost:8000,http://127.0.0.1:8000,http://wanand.my.id,https://wanand.my.id')
+<<<<<<< Updated upstream
+ALLOWED_HOSTS = _csv_env('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver,wann-dev.my.id,www.wann-dev.my.id')
+CSRF_TRUSTED_ORIGINS = _csv_env('DJANGO_CSRF_TRUSTED_ORIGINS', 'http://localhost:8000,http://127.0.0.1:8000,http://wann-dev.my.id,https://wann-dev.my.id')
+=======
+ALLOWED_HOSTS = _csv_env('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,wann-dev.my.id,www.wann-dev.my.id,100.107.176.118')
+CSRF_TRUSTED_ORIGINS = _csv_env('DJANGO_CSRF_TRUSTED_ORIGINS', 'http://localhost:8000,http://127.0.0.1:8000,http://wann-dev.my.id,https://wann-dev.my.id,http://100.107.176.118:8000')
+>>>>>>> Stashed changes
 
 INSTALLED_APPS = [
     'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes',
