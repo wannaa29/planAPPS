@@ -12,7 +12,7 @@ python manage.py runserver
 
 Open `http://127.0.0.1:8000/register/` to create an account. New accounts receive a small demo workspace so the dashboard is useful immediately. SQLite is the local default; set `DB_ENGINE`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, and `DB_PORT` for PostgreSQL deployment.
 
-For public deployment on `wanand.my.id`, see [DEPLOYMENT.md](DEPLOYMENT.md). Copy `.env.example` to a secret environment file; `.gitignore` keeps it, the local SQLite database, collected static files, media uploads, caches, logs, and IDE files out of the repository.
+For public deployment on `wann-dev.my.id`, see [DEPLOYMENT.md](DEPLOYMENT.md). Copy `.env.example` to a secret environment file; `.gitignore` keeps it, the local SQLite database, collected static files, media uploads, caches, logs, and IDE files out of the repository.
 
 ## Included MVP
 
