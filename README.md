@@ -29,6 +29,7 @@ For public deployment on `wanand.my.id`, see [DEPLOYMENT.md](DEPLOYMENT.md). Cop
 - Saved shift templates are available at `/shift-templates/` and appear in the New shift form.
 - Schedule Flow now creates calendar entries only by selecting a saved template; the legacy `/shifts/` route redirects to Calendar.
 - Notes app with title and text body displayed as a responsive card grid.
+- Notes cards open a read-only detail view at `/notes/<id>/`; editing is a separate action, and excerpts are capped at 30 words server-side.
 - Offline page plus local task/note queue that syncs to `/sync/offline/` when the browser comes back online.
 - Persistent dark mode toggle stored in the browser.
 - Root dashboard acts as an app launcher for the separate Notes and Schedule Flow experiences.

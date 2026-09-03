@@ -266,6 +266,11 @@ def note_edit(request, pk):
     return render(request, 'planner/note_form.html', {'form': form, 'page_title': 'Edit note', 'back_url': 'notes'})
 
 @login_required
+def note_detail(request, pk):
+    note = get_object_or_404(Note, owner=request.user, pk=pk)
+    return render(request, 'planner/note_detail.html', {'note': note})
+
+@login_required
 def note_delete(request, pk):
     note = get_object_or_404(Note, owner=request.user, pk=pk)
     if request.method == 'POST': note.delete(); messages.success(request, 'Note deleted.'); return redirect('notes')

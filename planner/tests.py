@@ -59,6 +59,7 @@ class PlannerTests(TestCase):
         self.assertEqual(response.status_code, 302)
         note = Note.objects.get(owner=self.user, title='Idea')
         self.assertEqual(self.client.get('/notes/').status_code, 200)
+        self.assertEqual(self.client.get(f'/notes/{note.pk}/').status_code, 200)
         self.assertEqual(self.client.get(f'/notes/{note.pk}/edit/').status_code, 200)
         self.assertEqual(self.client.post(f'/notes/{note.pk}/delete/').status_code, 302)
 

@@ -14,5 +14,5 @@ urlpatterns = [
     path('service-worker.js', views.service_worker, name='service_worker'),
     path('widget/', views.widget, name='widget'),
     path('offline/', views.offline, name='offline'), path('sync/offline/', views.sync_offline, name='sync_offline'),
-    path('notes/', views.notes, name='notes'), path('notes/new/', views.note_create, name='note_create'), path('notes/<int:pk>/edit/', views.note_edit, name='note_edit'), path('notes/<int:pk>/delete/', views.note_delete, name='note_delete'),
+    path('notes/', views.notes, name='notes'), path('notes/new/', views.note_create, name='note_create'), path('notes/<int:pk>/', views.note_detail, name='note_detail'), path('notes/<int:pk>/edit/', views.note_edit, name='note_edit'), path('notes/<int:pk>/delete/', views.note_delete, name='note_delete'),
 ]
